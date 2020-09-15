@@ -77,21 +77,35 @@ double derivative(std::map<long double, long double> *ellipse_lengths, std::vect
 //parameters: {1000000, 0.023, 0.9995, 0.001}
 //cost function: 0.000852572
 //Mean percentage error: 0.111765%
-void gradient_descent(std::map<long double, long double> *ellipse_lengths, std::vector<long double> *weights, 
-                        int iterations, double learning_rate, double learning_rate_modifier, double min_learning_rate) {
+void gradient_descent(std::vector<long double> *weights, bool show_results, int iterations, 
+                        double learning_rate, double learning_rate_modifier, double min_learning_rate) {
+    
+    //load true values of ellipse perimeters
+    std::map<long double, long double> ellipse_lengths;
+    load_true_values(&ellipse_lengths);
 
     //loop through each iteration and within each iteration loop through and update each weight                        
     for (int i = 0; i < iterations; i++) {
         for (int j = 0; j < 5; j++) {
 
             //max() used as if weights are negative then we could end up trying to sqrt a negative
-            weights->at(j) = std::max(0.L, weights->at(j) - learning_rate * derivative(ellipse_lengths, weights, j));
+            weights->at(j) = std::max(0.L, weights->at(j) - learning_rate * derivative(&ellipse_lengths, weights, j));
         }
 
         //hopefully helps to avoid local minima
         if (learning_rate > min_learning_rate) {
             learning_rate *= learning_rate_modifier;
         }
+    }
+
+    //output results
+    if (show_results) {
+        std::cout << "Final weights: ";
+        for (int i = 0; i < 5; i++) {
+            std::cout << weights->at(i) << ", ";
+        }
+        std::cout << "\nCost function value: " << cost_function(&ellipse_lengths, weights) << std::endl;
+        std::cout << "Mean percentage error: " << percentage_error(&ellipse_lengths, weights) << std::endl;
     }
 }
 

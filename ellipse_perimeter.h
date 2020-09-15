@@ -10,8 +10,8 @@ double percentage_error(std::map<long double, long double> *ellipse_lengths, std
 
 double derivative(std::map<long double, long double> *ellipse_lengths, std::vector<long double> *w, int j);
 
-void gradient_descent(std::map<long double, long double> *ellipse_lengths, std::vector<long double> *weights, 
-                        int iterations = 1000, double learning_rate = 0.01, double learning_rate_modifier = 1, double min_learning_rate = 0);
+void gradient_descent(std::vector<long double> *weights, bool show_results = false, int iterations = 1000, 
+                        double learning_rate = 0.01, double learning_rate_modifier = 1, double min_learning_rate = 0);
 
 void load_true_values(std::map<long double, long double> *ellipse_lengths);
 
