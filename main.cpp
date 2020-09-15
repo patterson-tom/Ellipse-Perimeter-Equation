@@ -74,7 +74,7 @@ double derivative(std::map<long double, long double> *ellipse_lengths, std::vect
 }
 
 void gradient_descent(std::map<long double, long double> *ellipse_lengths, std::vector<long double> *weights, 
-                        int iterations = 1000, double learning_rate = 0.01, double learning_rate_modifier = 1) {
+                        int iterations = 1000, double learning_rate = 0.01, double learning_rate_modifier = 1, double min_learning_rate = 0) {
 
     //loop through each iteration and within each iteration loop through and update each weight                        
     for (int i = 0; i < iterations; i++) {
@@ -85,7 +85,9 @@ void gradient_descent(std::map<long double, long double> *ellipse_lengths, std::
         }
 
         //hopefully helps to avoid local minima
-        learning_rate *= learning_rate_modifier;
+        if (learning_rate > min_learning_rate) {
+            learning_rate *= learning_rate_modifier;
+        }
     }
 }
 
@@ -126,7 +128,7 @@ int main() {
     }
 
     //run gradient descent
-    gradient_descent(&ellipse_lengths, &weights, 20000, 0.026, 0.9994);
+    gradient_descent(&ellipse_lengths, &weights, 1000000, 0.023, 0.9995, 0.001);
 
     //output results
     std::cout << "Final weights: ";
@@ -134,7 +136,12 @@ int main() {
         std::cout << weights.at(i) << ", ";
     }
     std::cout << "\nCost function value: " << cost_function(&ellipse_lengths, &weights) << std::endl;
-    std::cout << "Mean percentage accuracy: " <<percentage_accuracy(&ellipse_lengths, &weights) << std::endl;
+    std::cout << "Mean percentage accuracy: " << percentage_accuracy(&ellipse_lengths, &weights) << std::endl;
 
     return 0;
 }
+
+//best weights seen: {42.3783, 15.4938, 1690.18, 1257.11, 169.231}
+//parameters: {1000000, 0.023, 0.9995, 0.001}
+//cost function: 0.000852572
+//Mean percentage accuracy: 0.111765%
