@@ -9,7 +9,7 @@
 #include <stdlib.h>   
 #include <time.h>
 
-//of the form pi * (wa + vb - sqrt(xa^2 + yab + zb^2)) where w,v,x,y,z are the weights
+//of the form y = pi * (wa + vb - sqrt(xa^2 + yab + zb^2)) where w,v,x,y,z are the weights
 double hypothesis_function(double a, double b, std::vector<long double> *w) {
     return 3.141592654 * (w->at(0) * a + w->at(1) * b - sqrt(w->at(2) * a * a + w->at(3) * a * b + w->at(4) * b * b));
 }
@@ -23,8 +23,8 @@ double cost_function(std::map<long double, long double> *ellipse_lengths, std::v
     return sum / ellipse_lengths->size();
 }
 
-//returns the mean percentage accuracy of all data
-double percentage_accuracy(std::map<long double, long double> *ellipse_lengths, std::vector<long double> *weights) {
+//returns the mean percentage error of all data
+double percentage_error(std::map<long double, long double> *ellipse_lengths, std::vector<long double> *weights) {
     long double sum = 0;
     for (std::map<long double, long double>::iterator it = ellipse_lengths->begin(); it != ellipse_lengths->end(); it++) {
         double diff = abs(it->second - hypothesis_function(it->first, 1, weights));
@@ -128,7 +128,7 @@ int main() {
     }
 
     //run gradient descent
-    gradient_descent(&ellipse_lengths, &weights, 1000000, 0.023, 0.9995, 0.001);
+    gradient_descent(&ellipse_lengths, &weights, 10000, 0.023, 0.9995, 0.001);
 
     //output results
     std::cout << "Final weights: ";
@@ -136,7 +136,7 @@ int main() {
         std::cout << weights.at(i) << ", ";
     }
     std::cout << "\nCost function value: " << cost_function(&ellipse_lengths, &weights) << std::endl;
-    std::cout << "Mean percentage accuracy: " << percentage_accuracy(&ellipse_lengths, &weights) << std::endl;
+    std::cout << "Mean percentage error: " << percentage_error(&ellipse_lengths, &weights) << std::endl;
 
     return 0;
 }
@@ -144,4 +144,4 @@ int main() {
 //best weights seen: {42.3783, 15.4938, 1690.18, 1257.11, 169.231}
 //parameters: {1000000, 0.023, 0.9995, 0.001}
 //cost function: 0.000852572
-//Mean percentage accuracy: 0.111765%
+//Mean percentage error: 0.111765%
